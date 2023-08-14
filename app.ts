@@ -1,16 +1,24 @@
+import express from "express";
 import { ApolloServer } from "@apollo/server";
-
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { expressMiddleware } from "@apollo/server/express4";
 
 import typeDefs from "./model";
 
+const app = express();
+
+//Body parser(from node)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const server = new ApolloServer({
   typeDefs,
-  //resolvers,
+  //resolvers
 });
 
-const url = startStandaloneServer(server, {
-  listen: { port: 4000 },
-});
+await server.start();
 
-console.log(`🚀  Server ready at: ${url}`);
+app.use("/graphql", expressMiddleware(server));
+
+app.listen({ port: 4000 }, () =>
+  console.log("server started on localhost:4000")
+);
