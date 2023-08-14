@@ -1,9 +1,16 @@
-import express from "express";
+import { ApolloServer } from "@apollo/server";
 
-const app = express();
+import { startStandaloneServer } from "@apollo/server/standalone";
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+import typeDefs from "./model";
+
+const server = new ApolloServer({
+  typeDefs,
+  //resolvers,
 });
 
-app.listen(3000);
+const url = startStandaloneServer(server, {
+  listen: { port: 4000 },
+});
+
+console.log(`🚀  Server ready at: ${url}`);
